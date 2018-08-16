@@ -1,0 +1,9 @@
+.question {
+  border-left: 6px solid rgb(62,84,175);
+  background-color: rgb(227,254,254);
+  padding-top: 50px;
+  padding-bottom: 50px;
+  margin-left: 10%;
+  margin-right: 10%;
+  font-size: 25px;
+}
