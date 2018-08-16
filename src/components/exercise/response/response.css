@@ -1,0 +1,15 @@
+.response {
+  padding: 20px;
+  margin-left: 30%;
+  margin-right: 30%;
+  margin-top: 50px;
+  color: #fff;
+}
+
+.correct {
+  background-color: green;
+}
+
+.incorrect {
+  background-color: red;
+}
