@@ -1,12 +1,9 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import Button from '@material-ui/core/Button';
-import Icon from '@material-ui/core/Icon';
-import SendIcon from '@material-ui/icons/Send';
+// import PropTypes from 'prop-types';
 
-import { Instructions, Question, AnswerChoices } from './components/exercise';
+import { Instructions, Question, AnswerChoices, Response } from './components/exercise';
 
-const myWord = 'إنِّي أُحِبُّ اللهَ وَ رَسُولَهُ'.split(' ').reverse();
+// const myWord = 'إنِّي أُحِبُّ اللهَ وَ رَسُولَهُ'.split(' ').reverse();
 
 class Exercise extends React.Component {
 
@@ -26,11 +23,25 @@ class Exercise extends React.Component {
           lang: 'en',
           bold: true,
           boldIndex: 5,
-          answerChoices: ['Yes', 'No'],
-          answerChoiceResponses: ['That is correct', 'That is not correct'],
-          correctAnswer: 0,
+          answerChoices: ['Raf', 'Nasb', 'Jarr'],
+          answerChoiceResponses: ['That is not correct', 'That is correct', 'That is not correct'],
+          correctAnswer: 1,
         }
       ]
+    }
+  }
+
+  fetchExercise() {
+    // Handle getting exercise data from server
+    // Set response in state
+  }
+
+  navigateBetweenQuestions(direction) {
+    // Hide previous answer response
+    if (direction === 'forward') {
+      // Change question
+    } else {
+      // Change question
     }
   }
 
@@ -39,15 +50,25 @@ class Exercise extends React.Component {
     const currentQuestion = questions[activeQuestion];
     const responseToSelectedAnswer = currentQuestion.answerChoiceResponses[indexOfAnswerSelected];
     if (indexOfAnswerSelected === questions[activeQuestion].correctAnswer) {
+      this.setState({ correctAnswerSelected: true });
       // handle correct behavior
+    } else {
+      this.setState({ correctAnswerSelected: false })
     }
-    this.setState({ activeAnswerChoiceResponse: responseToSelectedAnswer });
+    this.setState({ answerChoiceResponse: responseToSelectedAnswer });
   }
 
   render() {
-    const { instructions, questions, activeQuestion } = this.state;
-    const { answerChoices, correctAnswer } = questions[activeQuestion];
-    console.log(this.state.activeAnswerChoiceResponse);
+    const {
+      instructions,
+      questions,
+      activeQuestion,
+      answerChoiceResponse,
+      correctAnswerSelected
+    } = this.state;
+    // todo
+    // show loading if server data isn't rendered/retrieved just yet
+    const { answerChoices } = questions[activeQuestion];
     return (
       <div className="wrapper">
         <Instructions instructions={instructions} />
@@ -56,12 +77,10 @@ class Exercise extends React.Component {
           handle={this.handleAnswerResponse.bind(this)}
           choices={answerChoices}
         />
+        { answerChoiceResponse && <Response text={answerChoiceResponse} correct={correctAnswerSelected} /> }
       </div>
     );
   }
 }
-
-Exercise.propTypes = {
-};
 
 export default Exercise;
