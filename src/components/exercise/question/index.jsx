@@ -6,19 +6,19 @@ import './question.css'
 class Question extends React.PureComponent {
 
   static propTypes = {
+    questions: PropTypes.array,
+    active: PropTypes.number,
   };
 
   renderBold(qn) {
-    console.log(qn.text);
     const text = qn.text.split(' ');
     const indexOfWordToBold = qn.boldIndex;
-    console.log(indexOfWordToBold);
     return (
       <div className="question">
         {
           text.map((word, i) => {
-            if (i === indexOfWordToBold) return <span style={{fontWeight: 'bold'}}>{word}</span>
-            return <span>{word}&nbsp;</span>
+            if (i === indexOfWordToBold) return <span key={word + i} style={{fontWeight: 'bold'}}>{word}</span>
+            return <span key={word + i}>{word}&nbsp;</span>
           })
         }
       </div>
@@ -31,7 +31,7 @@ class Question extends React.PureComponent {
 
     return (
       <div className="question">
-        My teacher drinks chocolate milk regularly.
+        { questions[active].text }
       </div>
     )
   }

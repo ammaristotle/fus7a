@@ -23,17 +23,17 @@ class AnswerChoices extends React.PureComponent {
   };
 
   _onAnswerClick(event, index) {
-    console.log('clicked');
-    console.log(this.props.handle(index));
+    this.props.handle(index);
   }
 
   render() {
-    const { choices, handle } = this.props;
+    const { choices } = this.props;
     return (
       <div>
         {
           choices.map((answerText, index) => (
             <MultiChoiceButton
+              key={answerText+index}
               func={(event) => this._onAnswerClick(event, index)}
               text={answerText}
             />
