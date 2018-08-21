@@ -6,8 +6,13 @@ import './question.css'
 class Question extends React.PureComponent {
 
   static propTypes = {
-    questions: PropTypes.array,
-    active: PropTypes.number,
+    questions: PropTypes.array.isRequired,
+    active: PropTypes.number.isRequired,
+  };
+
+  static defaultProps = {
+    questions: [],
+    active: 0,
   };
 
   renderBold(qn) {
@@ -17,7 +22,7 @@ class Question extends React.PureComponent {
       <div className="question">
         {
           text.map((word, i) => {
-            if (i === indexOfWordToBold) return <span key={word + i} style={{fontWeight: 'bold'}}>{word}</span>
+            if (i === indexOfWordToBold) return <span key={word + i} style={{fontWeight: 'bold'}}>{word}&nbsp;</span>
             return <span key={word + i}>{word}&nbsp;</span>
           })
         }

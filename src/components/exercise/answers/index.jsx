@@ -2,14 +2,11 @@ import React from  'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 
-
-// import './instructions.css'
-
 const MultiChoiceButton = (props) => (
   <Button
     size="large"
     variant="contained"
-    style={{ backgroundColor: '#eaeaea', margin: '10px'}}
+    style={{ backgroundColor: '#eaeaea', margin: '10px', textTransform: 'none' }}
     onClick={props.func}
   >
     {props.text}
@@ -33,7 +30,7 @@ class AnswerChoices extends React.PureComponent {
         {
           choices.map((answerText, index) => (
             <MultiChoiceButton
-              key={answerText+index}
+              key={answerText + index}
               func={(event) => this._onAnswerClick(event, index)}
               text={answerText}
             />

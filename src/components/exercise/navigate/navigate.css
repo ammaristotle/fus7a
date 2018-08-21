@@ -1,0 +1,9 @@
+.nav-buttons {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+}
+
+.nav-buttons .left-button {
+  margin-right: 10px;
+}
