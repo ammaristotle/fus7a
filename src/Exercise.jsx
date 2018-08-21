@@ -9,41 +9,37 @@ class Exercise extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      instructions: "Tell whether the word in bold is in raf', nasb, or jarr",
       hint: '',
       activeExercise: 'ex-name',
       activeQuestion: 0,
       answerChoiceResponse: '',
       exerciseType: 'multiple_choice',
-      numOfQuestions: 2,
-      questions: [
-        {
-          text: 'My teacher drinks chocolate milk regularly',
-          translation: '',
-          lang: 'en',
-          bold: true,
-          boldIndex: 5,
-          answerChoices: ['Raf', 'Nasb', 'Jarr'],
-          answerChoiceResponses: ['That is not correct', 'That is correct', 'That is not correct'],
-          correctAnswer: 1,
-        },
-        {
-          text: 'He loves chocolate milk',
-          translation: '',
-          lang: 'en',
-          bold: true,
-          boldIndex: 0,
-          answerChoices: ['Raf', 'Nasb', 'Jarr'],
-          answerChoiceResponses: ['That is correct', 'That is not correct', 'That is not correct'],
-          correctAnswer: 0,
-        }
-      ]
+      questions: [],
+      loading: true,
+      error: false,
     }
   }
 
-  fetchExercise() {
-    // Handle getting exercise data from server
-    // Set response in state
+  fetchExercise(exercise) {
+    const url = `${process.env.REACT_APP_BASE_URL}${exercise}.json`;
+    fetch(url)
+      .then((response) => (response.ok ? response.json() : 'error'))
+      .then((data) => {
+        if (data === 'error') {
+          // TODO log to sentry
+          this.setState({ error: true, loading: false });
+          return;
+        }
+        const { instructions, numOfQuestions, questions, hint } = data;
+        this.setState({
+          instructions,
+          numOfQuestions,
+          questions,
+          hint,
+          loading: false,
+          activeQuestion: 0,
+        })
+      })
   }
 
   /**
@@ -91,16 +87,25 @@ class Exercise extends React.Component {
     });
   }
 
+  componentWillMount() {
+    console.log('mounted');
+    this.fetchExercise('fusha_lesson1_part1');
+  }
+
   render() {
     const {
       instructions,
       questions,
       activeQuestion,
       answerChoiceResponse,
-      correctAnswerSelected
+      correctAnswerSelected,
+      loading,
+      error,
     } = this.state;
-    // todo
-    // show loading if server data isn't rendered/retrieved just yet
+
+    if (error) return (<div>ERROR</div>);
+    if (loading) return (<div>Loading</div>);
+
     const { answerChoices } = questions[activeQuestion];
     return (
       <div className="wrapper">
