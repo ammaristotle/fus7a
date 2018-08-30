@@ -1,16 +1,34 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import PropTypes from 'prop-types';
 import { Instructions, Question, AnswerChoices, Response, Navigation } from './components/exercise';
 
-// const myWord = 'إنِّي أُحِبُّ اللهَ وَ رَسُولَهُ'.split(' ').reverse();
+const Loading = () => (
+  <CircularProgress
+    style={{ position: 'absolute', top: '50%', left: '50%'}}
+    size={50}
+  />
+);
+
+const Error = () => (
+  null
+)
 
 class Exercise extends React.Component {
+
+  static propTypes = {
+    exercise: PropTypes.string,
+  };
+
+  static defaultProps = {
+    exercise: '',
+  };
 
   constructor(props) {
     super(props);
     this.state = {
       hint: '',
-      activeExercise: 'ex-name',
+      activeExercise: props.exercise || 'lesson1_part1',
       activeQuestion: 0,
       answerChoiceResponse: '',
       exerciseType: 'multiple_choice',
@@ -23,23 +41,22 @@ class Exercise extends React.Component {
   fetchExercise(exercise) {
     const url = `${process.env.REACT_APP_BASE_URL}${exercise}.json`;
     fetch(url)
-      .then((response) => (response.ok ? response.json() : 'error'))
-      .then((data) => {
-        if (data === 'error') {
-          // TODO log to sentry
-          this.setState({ error: true, loading: false });
-          return;
-        }
-        const { instructions, numOfQuestions, questions, hint } = data;
-        this.setState({
-          instructions,
-          numOfQuestions,
-          questions,
-          hint,
-          loading: false,
-          activeQuestion: 0,
-        })
-      })
+      .then((response) => (response.json()))
+      .then(
+        data => {
+            const { instructions, numOfQuestions, questions, hint } = data;
+            this.setState({
+              instructions,
+              numOfQuestions,
+              questions,
+              hint,
+              loading: false,
+              activeQuestion: 0,
+              answerChoiceResponse: '',
+            })
+        },
+        error => this.setState({ error: true, loading: false })
+      );
   }
 
   /**
@@ -53,15 +70,13 @@ class Exercise extends React.Component {
     const { activeQuestion, numOfQuestions } = this.state;
     // The question we want to end up at
     const endingNumber = activeQuestion + increment;
-    // If we reached the end, we don't want to do anything
+    // If we've reached the end, we don't want to do anything
     const reachedEndOfQuestions = (
       (endingNumber === -1) || (endingNumber === numOfQuestions)
-      ? true
-      : false
     );
-    // As long as we're not the end, navigate to next or previous question
+    // Navigate to next or previous question
     if (!reachedEndOfQuestions) {
-      this.setState((prevState, props) => {
+      this.setState((prevState) => {
         return {
           activeQuestion: prevState.activeQuestion + increment,
           answerChoiceResponse: '',
@@ -88,8 +103,17 @@ class Exercise extends React.Component {
   }
 
   componentWillMount() {
-    console.log('mounted');
-    this.fetchExercise('fusha_lesson1_part1');
+    const { activeExercise } = this.state;
+    this.fetchExercise(activeExercise);
+  }
+
+  // Change exercise
+  componentWillReceiveProps(nextProps) {
+    const { activeExercise } = this.state, { exercise } = nextProps;
+    if (exercise !== activeExercise && exercise !== undefined) {
+      this.setState({ activeExercise: exercise });
+      this.fetchExercise(exercise);
+    }
   }
 
   render() {
@@ -101,10 +125,11 @@ class Exercise extends React.Component {
       correctAnswerSelected,
       loading,
       error,
+      numOfQuestions,
     } = this.state;
 
     if (error) return (<div>ERROR</div>);
-    if (loading) return (<div>Loading</div>);
+    if (loading) return (<Loading />);
 
     const { answerChoices } = questions[activeQuestion];
     return (
@@ -116,7 +141,11 @@ class Exercise extends React.Component {
           choices={answerChoices}
         />
         { answerChoiceResponse && <Response text={answerChoiceResponse} correct={correctAnswerSelected} /> }
-        <Navigation handleChange={this.navigateBetweenQuestions.bind(this)} />
+        <Navigation
+          handleChange={this.navigateBetweenQuestions.bind(this)}
+          current={activeQuestion}
+          total={numOfQuestions}
+        />
       </div>
     );
   }
