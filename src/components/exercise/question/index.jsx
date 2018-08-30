@@ -32,10 +32,11 @@ class Question extends React.PureComponent {
 
   render() {
     const { questions, active } = this.props;
+    const lang = questions[active].lang || 'en';
     if (questions[active].bold) return this.renderBold(questions[active]);
 
     return (
-      <div className="question">
+      <div className={`question ${lang === 'ar' && 'arabic'}`}>
         { questions[active].text }
       </div>
     )
