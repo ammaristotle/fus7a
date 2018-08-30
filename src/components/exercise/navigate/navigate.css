@@ -7,3 +7,15 @@
 .nav-buttons .left-button {
   margin-right: 10px;
 }
+
+.nav-buttons .progress {
+  margin-bottom: 20px;
+}
+
+@media (max-height: 570px) {
+  .nav-buttons {
+    margin-top: 30px;
+    position: inherit;
+    margin-bottom: 50px;
+  }
+}
