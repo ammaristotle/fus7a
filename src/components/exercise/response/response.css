@@ -1,8 +1,4 @@
 .response {
-  padding: 20px;
-  margin-left: 30%;
-  margin-right: 30%;
-  margin-top: 50px;
   color: #fff;
 }
 
@@ -12,4 +8,22 @@
 
 .incorrect {
   background-color: red;
+}
+
+@media (min-width: 0px) {
+  .response {
+    padding: 20px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
+@media (min-width: 900px) {
+  .response {
+    padding: 20px;
+    margin-left: 30%;
+    margin-right: 30%;
+    margin-top: 50px;
+  }
 }

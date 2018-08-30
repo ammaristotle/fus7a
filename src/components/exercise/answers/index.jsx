@@ -2,6 +2,8 @@ import React from  'react';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 
+import './answers.css';
+
 const MultiChoiceButton = (props) => (
   <Button
     size="large"
@@ -26,7 +28,7 @@ class AnswerChoices extends React.PureComponent {
   render() {
     const { choices } = this.props;
     return (
-      <div>
+      <div className="answer-choices">
         {
           choices.map((answerText, index) => (
             <MultiChoiceButton
