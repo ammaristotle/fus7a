@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import NavBar from './navBar';
-import Drawer from './Drawer';
-import Exercise from './Exercise';
 import Login from './Login';
+import { NavBar, Drawer, ExerciseRoot } from '../components';
 
 class App extends Component {
 
@@ -42,7 +40,7 @@ class App extends Component {
           open={this.state.drawerOpen}
           toggle={this.toggled.bind(this)}
         />
-        <Exercise exercise={this.state.exercise} />
+        <ExerciseRoot exercise={this.state.exercise} />
       </div>
     )
   }

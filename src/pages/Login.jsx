@@ -1,7 +1,7 @@
 import React from 'react';
-import NavBar from './navBar';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { NavBar } from '../components';
 
 class Login extends React.Component {
   state = {

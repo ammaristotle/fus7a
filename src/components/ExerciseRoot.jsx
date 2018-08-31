@@ -1,7 +1,7 @@
 import React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import PropTypes from 'prop-types';
-import { Instructions, Question, AnswerChoices, Response, Navigation } from './components/exercise';
+import { Instructions, Question, AnswerChoices, Response, Navigation } from './exercise';
 
 const Loading = () => (
   <CircularProgress
