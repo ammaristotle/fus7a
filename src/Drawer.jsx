@@ -1,135 +1,160 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-// import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItem from '@material-ui/core/ListItem';
-import InboxIcon from '@material-ui/icons/Inbox';
-import DraftsIcon from '@material-ui/icons/Drafts';
 import Divider from '@material-ui/core/Divider';
+import Collapse from '@material-ui/core/Collapse';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import StarBorder from '@material-ui/icons/StarBorder';
+import Label from '@material-ui/icons/Label';
 
-const styles = {
+const styles = theme => ({
   list: {
     width: 250,
   },
-  fullList: {
-    width: 'auto',
+  nested: {
+    paddingLeft: theme.spacing.unit * 5,
   },
-};
+});
 
-class SwipeableTemporaryDrawer extends React.Component {
+class NavigationDrawer extends Component {
   state = {
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
+    buttons: [
+      {
+        text: 'First lesson',
+        nested: false,
+        nest: [
+          {
+            text: "Ism, F'il and Harf",
+            lesson: 'lesson1_part1'
+          },
+          {
+            text: "Raf', Nasb, and Jarr",
+            lesson: 'lesson1_part2'
+          },
+          {
+            text: 'Sounds and Combinations',
+            lesson: 'lesson1_part3'
+          },
+          {
+            text: 'Status in Arabic',
+            lesson: 'lesson1_part4'
+          }
+        ]
+      },
+      {
+        text: 'Lesson 2',
+        lesson: 'lesson2_part1'
+      }
+    ],
   };
 
-  toggleDrawer = (side, open) => () => {
-    this.setState({
-      [side]: open,
-    });
+  renderListItems() {
+    const { classes } = this.props;
+    return this.state.buttons.map((button, i) => {
+      if (button.nest) {
+        return (
+          <React.Fragment>
+            <ListItem button onClick={this.handleClick.bind(this, false, i, null)}>
+              <ListItemIcon>
+                <StarBorder style={{ color: 'rgb(62,84,175)' }} />
+              </ListItemIcon>
+              <ListItemText inset primary="Lesson 1" />
+              { button.nested ? <ExpandLess /> : <ExpandMore /> }
+            </ListItem>
+            <Collapse in={button.nested} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding >
+                {
+                  button.nest.map((nestedButton, j) => {
+                    return (
+                      <ListItem className={classes.nested} button onClick={this.handleClick.bind(this, true, i, j)}>
+                        <ListItemIcon>
+                          <Label />
+                        </ListItemIcon>
+                        <ListItemText inset primary={nestedButton.text} />
+                      </ListItem>
+                    )
+                  })
+                }
+              </List>
+            </Collapse>
+          </React.Fragment>
+        )
+      } return (
+        <ListItem button onClick={this.handleClick.bind(this, false, i, null)}>
+          <ListItemIcon>
+            <StarBorder style={{ color: 'rgb(62,84,175)' }} />
+          </ListItemIcon>
+          <ListItemText inset primary={button.text} />
+        </ListItem>
+      )
+    })
+  }
+
+  toggleDrawer = (open) => () => {
+    this.setState({ open });
+    this.props.toggle();
+  };
+
+  handleClick = (nestedBtnClick, i, j) => {
+    const { buttons } = this.state;
+    // Clicked a nested button, show new exercise
+    if (nestedBtnClick) {
+      const { lesson } = buttons[i].nest[j];
+      this.props.change(lesson);
+      return;
+    }
+
+    // Clicked a button with a nest, unveil nest
+    if (buttons[i].nest) {
+      let btnState = [...buttons];
+      const nested = !buttons[i].nested;
+      const newButtonState = Object.assign({}, buttons[i], { nested });
+      btnState[i] = newButtonState;
+      this.setState(state => ({ buttons: btnState }));
+      return;
+    }
+
+    // Clicked a regular button, show new exercise
+    const { lesson } = buttons[i];
+    this.props.change(lesson);
   };
 
   render() {
-    const { classes } = this.props;
-
-    const sideList = (
-      <div className={classes.list}>
-        <List></List>
-        <Divider />
-        <List></List>
-      </div>
-    );
-
-    const fullList = (
-      <div className={classes.fullList}>
-        <List></List>
-        <Divider />
-        <List></List>
-      </div>
-    );
-
+    const { classes, open } = this.props;
     return (
       <div>
-        {
-          /*
-            <Button style={{marginTop: '300px'}} onClick={this.toggleDrawer('left', true)}>Open Left</Button>
-           */
-        }
         <SwipeableDrawer
-          open={this.state.left}
-          onClose={this.toggleDrawer('left', false)}
-          onOpen={this.toggleDrawer('left', true)}
+          open={open}
+          onClose={this.toggleDrawer(false)}
+          onOpen={this.toggleDrawer(true)}
         >
           <div
             tabIndex={0}
             role="button"
-            onClick={this.toggleDrawer('left', false)}
-            onKeyDown={this.toggleDrawer('left', false)}
+            onKeyDown={this.toggleDrawer(false)}
           >
-          <List component="nav">
-      <ListItem button>
-        <ListItemIcon>
-          <InboxIcon />
-        </ListItemIcon>
-        <ListItemText primary="Inbox" />
-      </ListItem>
-      <ListItem button>
-        <ListItemIcon>
-          <DraftsIcon />
-        </ListItemIcon>
-        <ListItemText primary="Drafts" />
-      </ListItem>
-    </List>
-          </div>
-        </SwipeableDrawer>
-        <SwipeableDrawer
-          anchor="top"
-          open={this.state.top}
-          onClose={this.toggleDrawer('top', false)}
-          onOpen={this.toggleDrawer('top', true)}
-        >
-          <div
-            tabIndex={0}
-            role="button"
-            onClick={this.toggleDrawer('top', false)}
-            onKeyDown={this.toggleDrawer('top', false)}
-          >
-            {fullList}
-          </div>
-        </SwipeableDrawer>
-        <SwipeableDrawer
-          anchor="bottom"
-          open={this.state.bottom}
-          onClose={this.toggleDrawer('bottom', false)}
-          onOpen={this.toggleDrawer('bottom', true)}
-        >
-          <div
-            tabIndex={0}
-            role="button"
-            onClick={this.toggleDrawer('bottom', false)}
-            onKeyDown={this.toggleDrawer('bottom', false)}
-          >
-            {fullList}
-          </div>
-        </SwipeableDrawer>
-        <SwipeableDrawer
-          anchor="right"
-          open={this.state.right}
-          onClose={this.toggleDrawer('right', false)}
-          onOpen={this.toggleDrawer('right', true)}
-        >
-          <div
-            tabIndex={0}
-            role="button"
-            onClick={this.toggleDrawer('right', false)}
-            onKeyDown={this.toggleDrawer('right', false)}
-          >
-            {sideList}
+            <div className={classes.list}>
+              <List
+                component="nav"
+                subheader={
+                  <ListSubheader
+                    component="div"
+                    style={{ fontSize: '17px' }}
+                  >
+                    Select an Exercise
+                  </ListSubheader>
+                }
+              >
+                { this.renderListItems() }
+              </List>
+            </div>
           </div>
         </SwipeableDrawer>
       </div>
@@ -137,8 +162,8 @@ class SwipeableTemporaryDrawer extends React.Component {
   }
 }
 
-SwipeableTemporaryDrawer.propTypes = {
+NavigationDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SwipeableTemporaryDrawer);
+export default withStyles(styles)(NavigationDrawer);

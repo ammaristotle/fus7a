@@ -20,10 +20,6 @@ class Exercise extends React.Component {
     exercise: PropTypes.string,
   };
 
-  static defaultProps = {
-    exercise: '',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
