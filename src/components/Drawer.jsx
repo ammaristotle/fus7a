@@ -6,13 +6,19 @@ import List from '@material-ui/core/List';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import Collapse from '@material-ui/core/Collapse';
+import Switch from '@material-ui/core/Switch';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
+import TranslateIcon from '@material-ui/icons/Translate';
+import FiberNewIcon from '@material-ui/icons/FiberNew';
 import Label from '@material-ui/icons/Label';
+
+import { exercises } from '../constants';
 
 const styles = theme => ({
   list: {
@@ -23,41 +29,50 @@ const styles = theme => ({
   },
 });
 
+const Subheader = (props) => (
+  <ListSubheader component="div" style={{ fontSize: '17px' }}>
+    {props.text}
+  </ListSubheader>
+);
+
+const ExerciseListItem = (props) => {
+  const { style, func, button, icon } = props;
+  // Display if exercise is new
+  const ico = (button.new ? <FiberNewIcon style={{ color: '#f50057' }}/> : icon);
+  return (
+    <ListItem className={style} button onClick={func}>
+      <ListItemIcon>
+        { ico }
+      </ListItemIcon>
+      <ListItemText inset primary={button.text} />
+    </ListItem>
+  );
+}
+
 class NavigationDrawer extends Component {
   state = {
-    buttons: [
-      {
-        text: 'First lesson',
-        nested: false,
-        nest: [
-          {
-            text: "Ism, F'il and Harf",
-            lesson: 'lesson1_part1'
-          },
-          {
-            text: "Raf', Nasb, and Jarr",
-            lesson: 'lesson1_part2'
-          },
-          {
-            text: 'Sounds and Combinations',
-            lesson: 'lesson1_part3'
-          },
-          {
-            text: 'Status in Arabic',
-            lesson: 'lesson1_part4'
-          }
-        ]
-      },
-      {
-        text: 'Lesson 2',
-        lesson: 'lesson2_part1'
-      }
-    ],
+    buttons: exercises,
+    checked: localStorage.getItem('f4a_translation') === 'true',
   };
+
+  toggleTranslation = () => {
+    this.setState((prevState) => {
+      localStorage.setItem('f4a_translation', !prevState.checked);
+      this.props.updateSettings('translation', !prevState.checked);
+      return {
+        checked: !prevState.checked,
+      }
+    });
+  }
 
   renderListItems() {
     const { classes } = this.props;
     return this.state.buttons.map((button, i) => {
+      const itemProps = {
+        func: this.handleClick.bind(this, false, i, null),
+        button,
+        icon: <StarBorder style={{ color: 'rgb(62,84,175)' }} />,
+      };
       if (button.nest) {
         return (
           <React.Fragment>
@@ -65,20 +80,21 @@ class NavigationDrawer extends Component {
               <ListItemIcon>
                 <StarBorder style={{ color: 'rgb(62,84,175)' }} />
               </ListItemIcon>
-              <ListItemText inset primary="Lesson 1" />
+              <ListItemText inset primary={button.text} />
               { button.nested ? <ExpandLess /> : <ExpandMore /> }
             </ListItem>
             <Collapse in={button.nested} timeout="auto" unmountOnExit>
               <List component="div" disablePadding >
                 {
                   button.nest.map((nestedButton, j) => {
+                    const props = {
+                      style: classes.nested,
+                      func: this.handleClick.bind(this, true, i, j),
+                      button: nestedButton,
+                      icon: <Label />,
+                    }
                     return (
-                      <ListItem className={classes.nested} button onClick={this.handleClick.bind(this, true, i, j)}>
-                        <ListItemIcon>
-                          <Label />
-                        </ListItemIcon>
-                        <ListItemText inset primary={nestedButton.text} />
-                      </ListItem>
+                      <ExerciseListItem {...props} />
                     )
                   })
                 }
@@ -86,14 +102,7 @@ class NavigationDrawer extends Component {
             </Collapse>
           </React.Fragment>
         )
-      } return (
-        <ListItem button onClick={this.handleClick.bind(this, false, i, null)}>
-          <ListItemIcon>
-            <StarBorder style={{ color: 'rgb(62,84,175)' }} />
-          </ListItemIcon>
-          <ListItemText inset primary={button.text} />
-        </ListItem>
-      )
+      } return (<ExerciseListItem {...itemProps} />);
     })
   }
 
@@ -126,6 +135,24 @@ class NavigationDrawer extends Component {
     this.props.change(lesson);
   };
 
+renderSettings() {
+    const { checked } = this.state;
+    return (
+      <ListItem>
+        <ListItemIcon>
+          <TranslateIcon />
+        </ListItemIcon>
+        <ListItemText primary="Translation" />
+        <ListItemSecondaryAction>
+          <Switch
+            onChange={this.toggleTranslation}
+            checked={checked}
+          />
+        </ListItemSecondaryAction>
+      </ListItem>
+    )
+  }
+
   render() {
     const { classes, open } = this.props;
     return (
@@ -143,16 +170,12 @@ class NavigationDrawer extends Component {
             <div className={classes.list}>
               <List
                 component="nav"
-                subheader={
-                  <ListSubheader
-                    component="div"
-                    style={{ fontSize: '17px' }}
-                  >
-                    Select an Exercise
-                  </ListSubheader>
-                }
+                subheader={<Subheader text="Select an exercise" />}
               >
                 { this.renderListItems() }
+                <Divider />
+                <Subheader text="Settings" />
+                { this.renderSettings() }
               </List>
             </div>
           </div>

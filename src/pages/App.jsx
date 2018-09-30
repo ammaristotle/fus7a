@@ -19,6 +19,9 @@ class App extends Component {
       email: localStorage.getItem('f4a_email'),
       drawerOpen: false,
       auth: false,
+      settings: {
+        translation: localStorage.getItem('f4a_translation') === 'true'
+      }
     }
   }
 
@@ -31,23 +34,29 @@ class App extends Component {
     this.toggled();
   }
 
+  updateSettings(setting, value) {
+    this.setState(state => ({ settings: { ...state.settings, [setting]: value } }));
+  }
+
   renderApp() {
+    const { drawerOpen, exercise, settings } = this.state;
     return (
       <div>
         <NavBar toggle={this.toggled.bind(this)} />
         <Drawer
           change={this.changeExercise.bind(this)}
-          open={this.state.drawerOpen}
+          open={drawerOpen}
           toggle={this.toggled.bind(this)}
+          updateSettings={this.updateSettings.bind(this)}
         />
-        <ExerciseRoot exercise={this.state.exercise} />
+        <ExerciseRoot exercise={exercise} settings={settings} />
       </div>
     )
   }
 
   render() {
-    const { email } = this.state;
-    if (!email) return (<Login action={this.signIn.bind(this)} />);
+    // const { email } = this.state;
+    // if (!email) return (<Login action={this.signIn.bind(this)} />);
     return this.renderApp();
   }
 }
