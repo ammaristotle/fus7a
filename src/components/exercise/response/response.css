@@ -1,13 +1,19 @@
 .response {
   color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .correct {
-  background-color: green;
+  background-color: #dff0d8;
+  border-color: #d0e9c6;
+  color: #3c763d;
 }
 
 .incorrect {
-  background-color: red;
+  background-color: #f2dede;
+  border-color: #ebcccc;
+  color: #a94442;
 }
 
 @media (min-width: 0px) {
