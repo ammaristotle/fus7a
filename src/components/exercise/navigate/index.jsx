@@ -6,6 +6,10 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 
 import './navigate.css'
 
+const btnStyle = {
+  textTransform: 'none',
+};
+
 class Navigation extends PureComponent {
 
   static propTypes = {
@@ -17,14 +21,13 @@ class Navigation extends PureComponent {
     return (
       <div className="nav-buttons">
         <div className="progress">Progress: { current + 1 }/{ total }</div>
-        <Button variant="contained" className="left-button" color="primary" onClick={handleChange.bind(this, 'previous')}>
+        <Button style={btnStyle} variant="contained" className="left-button" color="primary" onClick={handleChange.bind(this, 'previous')}>
           <ArrowBack />Prev
         </Button>
-        <Button variant="contained" color="primary" onClick={handleChange.bind(this, 'next')}>
+        <Button style={btnStyle} variant="contained" color="primary" onClick={handleChange.bind(this, 'next')}>
           Next<ArrowForward />
         </Button>
         <br />
-        Donate
       </div>
     )
   }
