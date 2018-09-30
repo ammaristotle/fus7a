@@ -24,7 +24,11 @@ class Exercise extends React.Component {
     super(props);
     this.state = {
       hint: '',
-      activeExercise: props.exercise || 'lesson1_part1',
+      activeExercise: (
+        localStorage.getItem('f4a_active_ex')
+          || props.exercise
+          || 'lesson1_part1'
+      ),
       activeQuestion: 0,
       answerChoiceResponse: '',
       exerciseType: 'multiple_choice',
@@ -40,16 +44,16 @@ class Exercise extends React.Component {
       .then((response) => (response.json()))
       .then(
         data => {
-            const { instructions, numOfQuestions, questions, hint } = data;
-            this.setState({
-              instructions,
-              numOfQuestions,
-              questions,
-              hint,
-              loading: false,
-              activeQuestion: 0,
-              answerChoiceResponse: '',
-            })
+          const { instructions, numOfQuestions, questions, hint } = data;
+          this.setState({
+            instructions,
+            numOfQuestions,
+            questions,
+            hint,
+            loading: false,
+            activeQuestion: 0,
+            answerChoiceResponse: '',
+          });
         },
         error => this.setState({ error: true, loading: false })
       );
@@ -108,6 +112,8 @@ class Exercise extends React.Component {
     const { activeExercise } = this.state, { exercise } = nextProps;
     if (exercise !== activeExercise && exercise !== undefined) {
       this.setState({ activeExercise: exercise });
+      // Save locally, so it will reload same exercise on refresh
+      localStorage.setItem('f4a_active_ex', exercise);
       this.fetchExercise(exercise);
     }
   }
@@ -124,17 +130,25 @@ class Exercise extends React.Component {
       numOfQuestions,
     } = this.state;
 
+    const { settings } = this.props;
+
     if (error) return (<div>ERROR</div>);
     if (loading) return (<Loading />);
 
-    const { answerChoices } = questions[activeQuestion];
+    const { answerChoices, lang, answerChoiceLanguage } = questions[activeQuestion];
     return (
       <div className="wrapper">
         <Instructions instructions={instructions} />
-        <Question questions={questions} active={activeQuestion} />
+        <Question
+          translate={settings.translation}
+          questions={questions}
+          active={activeQuestion}
+        />
         <AnswerChoices
           handle={this.handleAnswerResponse.bind(this)}
           choices={answerChoices}
+          language={lang}
+          answerChoiceLanguage={answerChoiceLanguage}
         />
         { answerChoiceResponse && <Response text={answerChoiceResponse} correct={correctAnswerSelected} /> }
         <Navigation
