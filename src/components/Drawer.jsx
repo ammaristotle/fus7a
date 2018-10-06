@@ -37,14 +37,20 @@ const Subheader = (props) => (
 
 const ExerciseListItem = (props) => {
   const { style, func, button, icon } = props;
-  // Display if exercise is new
-  const ico = (button.new ? <FiberNewIcon style={{ color: '#f50057' }}/> : icon);
+  // Use a special button if the exercise is new!
+  const iconToDisplay = (
+    button.new
+      ? <FiberNewIcon style={{ color: '#f50057' }}/>
+      : icon
+  );
   return (
     <ListItem className={style} button onClick={func}>
       <ListItemIcon>
-        { ico }
+        { iconToDisplay }
       </ListItemIcon>
       <ListItemText inset primary={button.text} />
+        { props.nested === true && <ExpandLess />}
+        { props.nested === false && <ExpandMore />}
     </ListItem>
   );
 }
@@ -67,29 +73,23 @@ class NavigationDrawer extends Component {
 
   renderListItems() {
     const { classes } = this.props;
-    return this.state.buttons.map((button, i) => {
+    return this.state.buttons.map((button, buttonIndex) => {
       const itemProps = {
-        func: this.handleClick.bind(this, false, i, null),
+        func: this.handleClick.bind(this, false, buttonIndex),
         button,
         icon: <StarBorder style={{ color: 'rgb(62,84,175)' }} />,
       };
       if (button.nest) {
         return (
           <React.Fragment>
-            <ListItem button onClick={this.handleClick.bind(this, false, i, null)}>
-              <ListItemIcon>
-                <StarBorder style={{ color: 'rgb(62,84,175)' }} />
-              </ListItemIcon>
-              <ListItemText inset primary={button.text} />
-              { button.nested ? <ExpandLess /> : <ExpandMore /> }
-            </ListItem>
+            <ExerciseListItem {...itemProps} nested={button.nested} />
             <Collapse in={button.nested} timeout="auto" unmountOnExit>
               <List component="div" disablePadding >
                 {
-                  button.nest.map((nestedButton, j) => {
+                  button.nest.map((nestedButton, nestedButtonIndex) => {
                     const props = {
                       style: classes.nested,
-                      func: this.handleClick.bind(this, true, i, j),
+                      func: this.handleClick.bind(this, true, buttonIndex, nestedButtonIndex),
                       button: nestedButton,
                       icon: <Label />,
                     }
@@ -111,6 +111,13 @@ class NavigationDrawer extends Component {
     this.props.toggle();
   };
 
+  /**
+   * Handle changing exercises or expanding to show exercises
+   * @param  {Boolean} nestedBtnClick clicked on a button nested under a lesson
+   * @param  {Number} i              index of button
+   * @param  {Number} j              index of nested button
+   * @return {Void}
+   */
   handleClick = (nestedBtnClick, i, j) => {
     const { buttons } = this.state;
     // Clicked a nested button, show new exercise
@@ -123,7 +130,9 @@ class NavigationDrawer extends Component {
     // Clicked a button with a nest, unveil nest
     if (buttons[i].nest) {
       let btnState = [...buttons];
+      // Change the nested property for the button
       const nested = !buttons[i].nested;
+      // Reassign the mutated object property
       const newButtonState = Object.assign({}, buttons[i], { nested });
       btnState[i] = newButtonState;
       this.setState(state => ({ buttons: btnState }));
@@ -135,7 +144,7 @@ class NavigationDrawer extends Component {
     this.props.change(lesson);
   };
 
-renderSettings() {
+  renderSettings() {
     const { checked } = this.state;
     return (
       <ListItem>
