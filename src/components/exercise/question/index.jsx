@@ -30,17 +30,35 @@ class Question extends React.PureComponent {
     );
   }
 
+  renderFlash(metadata) {
+    return (
+      <div className="flash-parent">
+        <table>
+          <tbody>
+            <tr>
+              <td>{metadata.questionType}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
+
   render() {
     const { questions, active, translate } = this.props;
-    const lang = questions[active].lang || 'en';
-    if (questions[active].bold) return this.renderBold(questions[active]);
+    const currentQuestion = questions[active];
+    const lang = currentQuestion.lang || 'en';
+    if (currentQuestion.bold) return this.renderBold(currentQuestion);
+
+    const { metadata } = currentQuestion;
 
     return (
       <div className={`question ${lang === 'ar' && 'arabic'}`}>
-        { questions[active].text }
+        { currentQuestion.text }
         <span className="translation">
-          { translate && questions[active].translation }
+          { translate && currentQuestion.translation }
         </span>
+        { metadata && this.renderFlash(metadata) }
       </div>
     )
   }

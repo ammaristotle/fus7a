@@ -50,3 +50,31 @@
   margin-left: 10px;
   font-size: 18px;
 }
+
+/* Animating flash */
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px -10px rgb(235,134,170);
+  }
+  to {
+    box-shadow: 0 0 10px 10px rgb(235,134,170);
+  }
+}
+
+.question .flash-parent {
+  margin-top: -23px;
+  float: right;
+}
+
+.question table {
+  margin-right: -5px;
+  margin-top: -2px;
+  background-color: rgb(62,84,175);
+  padding: 6px;
+  border-bottom-left-radius: 7px;
+  color: #fff;
+  font-family: sans-serif;
+  border: 2px;
+  font-size: 15px;
+  animation: glow 1s infinite alternate;
+}
