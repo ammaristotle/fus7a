@@ -16,6 +16,7 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 import StarBorder from '@material-ui/icons/StarBorder';
 import TranslateIcon from '@material-ui/icons/Translate';
 import FiberNewIcon from '@material-ui/icons/FiberNew';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import Label from '@material-ui/icons/Label';
 
 import { exercises } from '../constants';
@@ -81,7 +82,7 @@ class NavigationDrawer extends Component {
       };
       if (button.nest) {
         return (
-          <React.Fragment>
+          <React.Fragment key={buttonIndex + 'b'}>
             <ExerciseListItem {...itemProps} nested={button.nested} />
             <Collapse in={button.nested} timeout="auto" unmountOnExit>
               <List component="div" disablePadding >
@@ -94,7 +95,7 @@ class NavigationDrawer extends Component {
                       icon: <Label />,
                     }
                     return (
-                      <ExerciseListItem {...props} />
+                      <ExerciseListItem {...props} key={nestedButtonIndex + 'n'} />
                     )
                   })
                 }
@@ -147,18 +148,34 @@ class NavigationDrawer extends Component {
   renderSettings() {
     const { checked } = this.state;
     return (
-      <ListItem>
-        <ListItemIcon>
-          <TranslateIcon />
-        </ListItemIcon>
-        <ListItemText primary="Translation" />
-        <ListItemSecondaryAction>
-          <Switch
-            onChange={this.toggleTranslation}
-            checked={checked}
-          />
-        </ListItemSecondaryAction>
-      </ListItem>
+      <React.Fragment>
+        <ListItem>
+          <ListItemIcon>
+            <TranslateIcon />
+          </ListItemIcon>
+          <ListItemText primary="Translation" />
+          <ListItemSecondaryAction>
+            <Switch
+              onChange={this.toggleTranslation}
+              checked={checked}
+            />
+          </ListItemSecondaryAction>
+        </ListItem>
+        <Divider />
+        <Subheader text="Links" />
+        <a href={process.env.REACT_APP_CLASS_PORTAL_LINK}
+          style={{ textDecoration: 'none' }}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+        <ListItem button>
+          <ListItemIcon>
+            <OpenInNewIcon />
+          </ListItemIcon>
+          <ListItemText primary="Class portal" />
+        </ListItem>
+        </a>
+      </React.Fragment>
     )
   }
 
