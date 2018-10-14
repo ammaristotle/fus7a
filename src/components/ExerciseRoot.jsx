@@ -10,10 +10,6 @@ const Loading = () => (
   />
 );
 
-const Error = () => (
-  null
-)
-
 class Exercise extends React.Component {
 
   static propTypes = {
@@ -27,7 +23,7 @@ class Exercise extends React.Component {
       activeExercise: (
         localStorage.getItem('f4a_active_ex')
           || props.exercise
-          || 'lesson1_part1'
+          || 'lesson3_part1'
       ),
       activeQuestion: 0,
       answerChoiceResponse: '',

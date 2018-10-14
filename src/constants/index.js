@@ -32,11 +32,22 @@ export const exercises = [
       {
         text: 'Light and Heavy',
         lesson: 'lesson2_part1_v2',
-        new: true,
+        new: false,
       },
       {
         text: 'Flexibility',
         lesson: 'lesson2_part2_v2',
+        new: false,
+      }
+    ]
+  },
+  {
+    text: 'Lesson 3',
+    nested: false,
+    nest: [
+      {
+        text: '4 Properties of the Ism',
+        lesson: 'lesson3_part1',
         new: true,
       }
     ]
