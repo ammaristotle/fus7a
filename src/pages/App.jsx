@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Login from './Login';
 import { NavBar, Drawer, ExerciseRoot } from '../components';
 
 class App extends Component {
@@ -38,7 +37,7 @@ class App extends Component {
     this.setState(state => ({ settings: { ...state.settings, [setting]: value } }));
   }
 
-  renderApp() {
+  render() {
     const { drawerOpen, exercise, settings } = this.state;
     return (
       <div>
@@ -52,12 +51,6 @@ class App extends Component {
         <ExerciseRoot exercise={exercise} settings={settings} />
       </div>
     )
-  }
-
-  render() {
-    // const { email } = this.state;
-    // if (!email) return (<Login action={this.signIn.bind(this)} />);
-    return this.renderApp();
   }
 }
 
