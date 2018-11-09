@@ -48,6 +48,27 @@ export const exercises = [
       {
         text: '4 Properties of the Ism',
         lesson: 'lesson3_part1',
+        new: false,
+      }
+    ]
+  },
+  {
+    text: 'Lesson 5',
+    nested: false,
+    nest: [
+      {
+        text: 'Idhafa',
+        lesson: 'lesson5_part1_v3',
+        new: true,
+      },
+      {
+        text: 'Harf of Jarr',
+        lesson: 'lesson5_part2',
+        new: true,
+      },
+      {
+        text: 'Harf of Nasb',
+        lesson: 'lesson5_part3',
         new: true,
       }
     ]

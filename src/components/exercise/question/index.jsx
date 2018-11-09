@@ -54,11 +54,16 @@ class Question extends React.PureComponent {
 
     return (
       <div className={`question ${lang === 'ar' && 'arabic'}`}>
+        { metadata && metadata.subquestion &&
+          <span style={{ fontSize: '18px', display: 'block' }}>
+            { metadata.subquestion }
+          </span>
+        }
         { currentQuestion.text }
         <span className="translation">
           { translate && currentQuestion.translation }
         </span>
-        { metadata && this.renderFlash(metadata) }
+        { metadata && metadata.questionType && this.renderFlash(metadata) }
       </div>
     )
   }
